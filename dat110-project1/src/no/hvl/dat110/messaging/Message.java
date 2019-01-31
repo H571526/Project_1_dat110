@@ -1,13 +1,17 @@
 package no.hvl.dat110.messaging;
 
-import java.util.Arrays;
+import static no.hvl.dat110.messaging.MessageConfig.SEGMENTSIZE;
 
 public class Message {
 
 	private byte[] payload;
 
 	public Message(byte[] payload) {
-		this.payload = payload; // TODO: check for length within boundary
+		if(payload.length <= SEGMENTSIZE) {
+			this.payload = payload;
+		} else {
+			System.out.println("Message too long");
+		}
 	}
 
 	public Message() {
@@ -20,25 +24,31 @@ public class Message {
 
 	public byte[] encapsulate() {
 		
-		byte[] encoded;
+		byte[] encoded = new byte[SEGMENTSIZE];
+		encoded[0] = (byte) payload.length;
 		
-		// TODO
-		// encapulate/encode the payload of the message
 		
-		if (true) {
-		   throw new RuntimeException("not yet implemented");
+		for(int i = 0; i < payload.length; i++) {
+			encoded[i+1] = payload[i];
 		}
+		
+			
 		
 		return encoded;
 		
 	}
 
 	public void decapsulate(byte[] received) {
-
-		// TODO
-		// decapsulate data in received and put in payload
+		int n =(int) received[0];
 		
-	   throw new RuntimeException("not yet implemented");
+		
+		payload = new byte[n];
+		
+		for (int i = 0; i< n; i++) {
+			payload[i] = received[i+1];
+		}
+	   
+		
 		
 	}
 }

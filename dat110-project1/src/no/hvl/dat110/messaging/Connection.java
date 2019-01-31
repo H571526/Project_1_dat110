@@ -1,5 +1,6 @@
 package no.hvl.dat110.messaging;
 
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,26 +31,35 @@ public class Connection {
 
 	public void send(Message message) {
 
-		// TODO
-		// encapsulate the data contained in the message and write to the output stream
-
-		throw new RuntimeException("not yet implemented");
+		try {
+			outStream.write(message.encapsulate(), 0, MessageConfig.SEGMENTSIZE);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	public Message receive() {
+		
+		byte[] recvbuf = new byte[MessageConfig.SEGMENTSIZE];
+		
+		Message message = new Message(recvbuf);
+		
 
-		Message message;
-		byte[] recvbuf;
-
-		// TODO
-		// read a segment from the input stream and decapsulate into message
-
-		if (true) {
-			throw new RuntimeException("not yet implemented");
+		try {
+			
+			inStream.read(recvbuf, 0 ,MessageConfig.SEGMENTSIZE);
+		} 
+		catch (IOException e) {
+			
+			e.printStackTrace();
 		}
 
+		message.decapsulate(recvbuf);
+
 		return message;
+
 
 	}
 
